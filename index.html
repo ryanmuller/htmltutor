@@ -46,23 +46,39 @@
       }
     </style>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="js/prettyprint.js"></script>
+    <script type="text/javascript" src="js/prettify.js"></script>
     <script type="text/javascript" src="js/bootstrap-modal.js"></script>
     <script type="text/javascript">
 
 var testConstraints = function(win) {
-  if ($(win).text().indexOf("Hello, World") >= 0)
+  if ($(win).text().indexOf("Hello, world") >= 0)
     $('#c1').addClass('complete');
   else
     $('#c1').removeClass('complete');
 
-  console.log($(win).find('b:contains("World")'));
-  if ($(win).find('b:contains("World")').length > 0)
+  if ($(win).find('b:contains("world")').length > 0)
     $('#c2').addClass('complete');
   else
     $('#c2').removeClass('complete');
 
 }
+
+var giveHint = function(num) {
+  var codeArea = $('#code');
+  var curCode = codeArea.val();
+  if (num == 1) {
+    showHint('Now just type "world" in the black area.');
+    codeArea.val('Hello, ');
+  } else if (num == 2) {
+    codeArea.val(curCode + '\n\n<br /><br />Hint: Use the bold tag around the text you want to make bold: <b>This text is bold.</b>');
+  }
+  codeArea.keyup();
+}
+
+var showHint = function(msg) {
+  alert(msg);
+}
+
 
 $(document).ready(function() {
   $('#my-modal').modal();
@@ -76,6 +92,12 @@ $(document).ready(function() {
     testConstraints(win);
     win.close();
   });
+
+  $('#c1-hint').click(function() {
+    giveHint(1); });
+
+  $('#c2-hint').click(function() {
+    giveHint(2); });
 });
     </script>
   </head>
@@ -95,18 +117,18 @@ $(document).ready(function() {
             <table id="constraint-list">
               <tr>
                 <td id="c1">
-                  Write "Hello, World"
+                  Write "Hello, world"
                 </td>
                 <td>
-                  <a href="#">Give me a hint!</a>
+                  <a id="c1-hint" class="hint-button" href="#">Give me a hint!</a>
                 </td>
               </tr>
               <tr>
                 <td id="c2">
-                  Make "World" bold
+                  Make "world" bold
                 </td>
                 <td>
-                  <a href="#">Give me a hint!</a>
+                  <a id="c2-hint" class="hint-button" href="#">Give me a hint!</a>
                 </td>
               </tr>
             </table>
