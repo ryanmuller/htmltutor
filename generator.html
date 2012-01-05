@@ -49,48 +49,29 @@
     <script type="text/javascript" src="js/prettify.js"></script>
     <script type="text/javascript" src="js/bootstrap-modal.js"></script>
     <script type="text/javascript">
-//  _   _
-// / \_/ \___      ________
-// |o o  |   \____/   ____ \
-// \>^<__|           /    \_\
-//    \ \_/_______\_\
-var testConstraints = function(win) {
-  if ($(win).text().indexOf("Hello, world") >= 0)
-    $('#c1').addClass('complete');
-  else
-    $('#c1').removeClass('complete');
 
-  if ($(win).find('b:contains("world")').length > 0)
-    $('#c2').addClass('complete');
-  else
-    $('#c2').removeClass('complete');
-
+function getStyle(el,styleProp)
+{
+	var x = document.getElementById(el);
+	if (x.currentStyle)
+		var y = x.currentStyle[styleProp];
+	else if (window.getComputedStyle)
+		var y = document.defaultView.getComputedStyle(x,null).getPropertyValue(styleProp);
+	return y;
 }
-//                    __
-//    _   _           \ \             
-//   / \_/ \___    ___/ /
-//  _|o o  |   \__/  __/
-// |_\>^<__|       /     
-//         \_\   \_\
 
-var giveHint = function(num) {
-  var codeArea = $('#code');
-  var curCode = codeArea.val();
-  if (num == 1) {
-    showHint('Now just type "world" in the black area.');
-    codeArea.val('Hello, ');
-  } else if (num == 2) {
-    $("#narration").get(0).play();
-    codeArea.val(curCode + '\n\n<br /><br />Hint: Use the bold tag around the text you want to make bold: <b>This text is bold.</b>');
-
+var generateConstraints = function(win) {
+  $('#constraint-list').html("");
+  var elements = $(win).find('*');
+  console.log(elements);
+  for(var i=0; i<elements.length; i++) {
+    $('#constraint-list').append($('<li>').text(elements[i].tagName + ' with text ' +
+          $(elements[i]).text()))
+      .append($('<li>').text(elements[i].tagName + ' with style ' +
+            (window.getComputedStyle(elements[i])).cssText));
   }
-  codeArea.keyup();
-}
 
-var showHint = function(msg) {
-  alert(msg);
 }
-
 
 $(document).ready(function() {
   $('#my-modal').modal();
@@ -101,15 +82,10 @@ $(document).ready(function() {
 
     win.open();
     win.write(source);
-    testConstraints(win);
+    generateConstraints(win);
     win.close();
   });
 
-  $('#c1-hint').click(function() {
-    giveHint(1); });
-
-  $('#c2-hint').click(function() {
-    giveHint(2); });
 });
     </script>
   </head>
@@ -123,32 +99,6 @@ $(document).ready(function() {
     </div>
     <section>
       <div class="container">
-        <div class="row" id="assignment">
-          <div class="span16">
-            <h3>Assignment</h3>
-            <audio id="narration" preload="auto" autobuffer>
-              <source src="audio/boldtag.mp3"></source>
-            </audio>
-            <table id="constraint-list">
-              <tr>
-                <td id="c1">
-                  Write "Hello, world"
-                </td>
-                <td>
-                  <a id="c1-hint" class="hint-button" href="#">Give me a hint!</a>
-                </td>
-              </tr>
-              <tr>
-                <td id="c2">
-                  Make "world" bold
-                </td>
-                <td>
-                  <a id="c2-hint" class="hint-button" href="#">Give me a hint!</a>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
         <div class="row">
           <div class="span8">
             <h3>Code</h3>
@@ -163,6 +113,11 @@ $(document).ready(function() {
             <iframe id="result"></iframe>
           </div>
         </div>
+        <div class="row">
+          <div class="span16">
+            <h3>Constraints</h3>
+            <ul id="constraint-list"></ul>
+          </div>
       </div>
     </section>
   </body>
