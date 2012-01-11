@@ -4,32 +4,13 @@
   <head>
     <title>HTML Tutor</title>
     <link rel="stylesheet" href="bootstrap.css">
-    <link href="js/prettify.css" type="text/css" rel="stylesheet" />
     <style type="text/css">
       #code {
-        background: transparent;
-        border: 1px #ddd solid;
-        position: absolute;
-        top: 230px;
-        left: 90px;
+        position: relative;
+        top: 0px;
+        left: 0px;
         width: 460px;
         height: 400px;
-        font: 13pt Consolas;
-        color: #e0ff00;
-        display: none;
-      }
-
-      #backmodel {
-        border: 1px #ddd solid;
-        position: absolute;
-        top: 230px;
-        left: 90px;
-        width: 460px;
-        height: 400px;
-        font: 13pt Consolas;
-        background: #012;
-        padding-top: 5px;
-        padding-left: 5px;
       }
 
 
@@ -68,7 +49,6 @@
       }
     </style>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="js/prettify.js"></script>
     <script type="text/javascript" src="js/bootstrap-modal.js"></script>
     <script type="text/javascript" src="js/popcorn-complete.min.js"></script>
     <script type="text/javascript" src="js/jquery.highlight-3.min.js"></script>
@@ -76,13 +56,10 @@
 
 
 var em_hint = {
-  "code" : "This text is normal. <em>This text is italicized.</em> <strong>This text is bold.</strong>",
+  "code" : "This text is normal.\n<em>This text is italicized.</em>\n<strong>This text is bold.</strong>",
   "audio" : "tinkering.mp3",
-  "highlights" : [ { start: 1, end: 3, textToHighlight: 'This text is blah.' },
-  { start: 31, end: 33, textToHighlight: 'This text is italicized.' },
-  { start: 4, end: 30, textToHighlight: '<em>' },
-  { start: 4, end: 30, textToHighlight: '<em>' },
-  { start: 4, end: 30, textToHighlight: '</em>' } ]
+  "highlights" : [ { start: 1, end: 3, textToHighlight: 'This text is italicized'},
+  { start: 4, end: 30, textToHighlight: '<em>' } ]
 }
 
 var testConstraints = function(win) {
@@ -99,19 +76,16 @@ var testConstraints = function(win) {
 }
 
 var highlight = function(text) {
-  $('#backmodel').text($('#code').val());
-
-  $('#backmodel').highlight(text);
+  editor.find(text, { regExp: true });
 }
 
 var unhighlight = function() {
-  $('#backmodel').removeHighlight();
-}  
-
+  editor.find('');
+}
 
 var giveHint = function(hint) {
 
-  $('#code').val(hint['code']);
+  editor.getSession().setValue(hint['code']);
   $('#audio source').attr('src', 'audio/' + hint['audio']);
   var pop = Popcorn('#audio');
 
@@ -131,17 +105,11 @@ var giveHint = function(hint) {
 }
 
 var chooseHint = function(num) {
-  var codeArea = $('#code');
-  var curCode = codeArea.val();
   if (num == 1) {
-    showHint('Now just type "world" in the black area.');
-    codeArea.val('Hello, ');
-  } else if (num == 2) {
-    $("#audio").get(0).play();
-    codeArea.val(curCode + '\n\n<br /><br />Hint: Use the bold tag around the text you want to make bold: <b>This text is bold.</b>');
+    editor.getSession().setValue('Hello, ');
 
+    showHint('Now just type "world" in the code window.');
   }
-  codeArea.keyup();
 }
 
 var showHint = function(msg) {
@@ -153,18 +121,7 @@ var lastCode = "";
 $(document).ready(function() {
   $('#my-modal').modal();
 
-  setInterval(function() {
-    if ($('#code').val() != lastCode) {
-      var doc = $('#result')[0],
-          win = doc.contentDocument || doc.contentWindow.document,
-          source = $('#code').val();
 
-      win.open();
-      win.write(source);
-      testConstraints(win);
-      win.close();
-    }  
-  }, 300);
 
   $('#c1-hint').click(function() {
     chooseHint(1); });
@@ -217,11 +174,33 @@ $(document).ready(function() {
               <a class="close" href="#">x</a>
               <p><strong>Holy guacamole!</strong> Best check yo self, you're not looking too good.</p>
             </div>
-            <div id="textback">
-              <div id="backmodel"></div>
-            </div>
 
-            <textarea id="code" class="prettyprint"></textarea>
+            <div id="code"></div>
+            <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+            <script src="js/ace/mode-html.js" type="text/javascript" charset="utf-8"></script>
+            <script>
+            window.onload = function() {
+                editor = ace.edit("code");
+
+                var HtmlMode = require("ace/mode/html").Mode;
+                editor.getSession().setMode(new HtmlMode());
+
+                editor.getSession().on('change', function() {
+
+                  var curCode = editor.getSession().getValue();
+                  if (curCode != lastCode) {
+                    var doc = $('#result')[0],
+                        win = doc.contentDocument || doc.contentWindow.document;
+
+                    win.open();
+                    win.write(curCode);
+                    testConstraints(win);
+                    win.close();
+                  }  
+                });
+            };
+            </script> 
+
           </div>
           <div class="span8">
             <h3>Result</h3>
