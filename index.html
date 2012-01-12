@@ -55,8 +55,16 @@
     <script type="text/javascript">
 
 
+var ws_hint = {
+  "code" : [ { start: 0, end: 4, text: "This is a simple webpage.\nAnd I mean really simple." },
+             { start: 6, end: 7, text: "This  is  a  simple  webpage.  And  I  mean     really    simple." },
+             { start: 7, end: 8, text: "   This is a simple webpage.\n      And I mean really simple."},
+             { start: 8, end: 30, text: "This is a simple webpage.\nAnd I mean really simple." }],
+  "audio" : "whitespace.mp3",
+  "highlights" : []}
+
 var em_hint = {
-  "code" : "This text is normal.\n<em>This text is italicized.</em>\n<strong>This text is bold.</strong>",
+  "code" : [ { start: 1, end: 30, text: "This text is normal.\n<em>This text is italicized.</em>\n<strong>This text is bold.</strong>" } ],
   "audio" : "tinkering.mp3",
   "highlights" : [ { start: 1, end: 3, textToHighlight: 'This text is italicized'},
   { start: 4, end: 30, textToHighlight: '<em>' } ]
@@ -85,10 +93,22 @@ var unhighlight = function() {
 
 var giveHint = function(hint) {
 
-  editor.getSession().setValue(hint['code']);
-  $('#audio source').attr('src', 'audio/' + hint['audio']);
+  $('#audio source').attr('src', 'audio/' + hint.audio);
+
   var pop = Popcorn('#audio');
 
+  for(var i=0; i<hint.code.length; i++) {
+    var hl = hint.code[i];
+    
+    (function(hl) {
+      pop.code({
+        start: hl.start,
+        end: hl.end,
+        onStart: function() { editor.getSession().setValue(hl.text); },
+        onEnd: function() { }
+      });
+    })(hl);
+  }
   for(var i=0; i<hint.highlights.length; i++) {
     var hl = hint.highlights[i];
     (function(hl) {
@@ -101,6 +121,7 @@ var giveHint = function(hint) {
     })(hl);
   }
 
+  pop.load();
   pop.play();
 }
 
@@ -128,6 +149,10 @@ $(document).ready(function() {
 
   $('#c2-hint').click(function() {
     giveHint(em_hint); });
+
+  $('#c3-hint').click(function() {
+    giveHint(ws_hint); });
+
 });
     </script>
   </head>
@@ -144,7 +169,7 @@ $(document).ready(function() {
         <div class="row" id="assignment">
           <div class="span16">
             <h3>Assignment</h3>
-            <audio id="audio" preload="auto" autobuffer>
+            <audio id="audio">
               <source src="audio/tinkering.mp3"></source>
             </audio>
             <table id="constraint-list">
@@ -162,6 +187,15 @@ $(document).ready(function() {
                 </td>
                 <td>
                   <a id="c2-hint" class="hint-button" href="#">Give me a hint!</a>
+                </td>
+              </tr>
+              <tr>
+                <td id="c3">
+                  Put "Hello" and "world" on separate lines
+                </td>
+                <td>
+                  <a id="c3-hint" class="hint-button" href="#">Give me a
+                    hint!</a>
                 </td>
               </tr>
             </table>
