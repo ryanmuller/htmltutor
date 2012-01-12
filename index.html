@@ -19,11 +19,6 @@
         height: 400px;
       }
 
-      #constraint-list {
-        background: #FEFBF3;
-        border: 1px solid rgba(0,0,0,.2);
-        padding: 1em;
-      }
 
       #assignment li {
         color: #050;
@@ -57,9 +52,9 @@
 
 var ws_hint = {
   "code" : [ { start: 0, end: 4, text: "This is a simple webpage.\nAnd I mean really simple." },
-             { start: 6, end: 7, text: "This  is  a  simple  webpage.  And  I  mean     really    simple." },
+             { start: 6, end: 7, text: "This   is  a   simple    webpage.\nAnd  I  mean     really    simple." },
              { start: 7, end: 8, text: "   This is a simple webpage.\n      And I mean really simple."},
-             { start: 8, end: 30, text: "This is a simple webpage.\nAnd I mean really simple." }],
+             { start: 8, end: 30, text: "This is a simple webpage.\n\n\nAnd I mean really simple." }],
   "audio" : "whitespace.mp3",
   "highlights" : []}
 
@@ -172,33 +167,20 @@ $(document).ready(function() {
             <audio id="audio">
               <source src="audio/tinkering.mp3"></source>
             </audio>
-            <table id="constraint-list">
-              <tr>
-                <td id="c1">
-                  Write "Hello, world"
-                </td>
-                <td>
+            <ul id="constraint-list">
+              <li id="c1"> Write "Hello, world" 
                   <a id="c1-hint" class="hint-button" href="#">Give me a hint!</a>
-                </td>
-              </tr>
-              <tr>
-                <td id="c2">
+              </li>
+              <li id="c2">
                   Make "world" bold
-                </td>
-                <td>
                   <a id="c2-hint" class="hint-button" href="#">Give me a hint!</a>
-                </td>
-              </tr>
-              <tr>
-                <td id="c3">
+              </li>
+              <li id="c3">
                   Put "Hello" and "world" on separate lines
-                </td>
-                <td>
                   <a id="c3-hint" class="hint-button" href="#">Give me a
                     hint!</a>
-                </td>
-              </tr>
-            </table>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="row">
