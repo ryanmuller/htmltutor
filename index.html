@@ -50,20 +50,25 @@
     <script type="text/javascript">
 
 
+var hw_hint = {
+  "code" : [ { start: 0, end: 10, text: "Hello, " } ],
+  "audio" : "type-world.mp3",
+  "highlights" : []};
+
 var ws_hint = {
   "code" : [ { start: 0, end: 4, text: "This is a simple webpage.\nAnd I mean really simple." },
              { start: 6, end: 7, text: "This   is  a   simple    webpage.\nAnd  I  mean     really    simple." },
              { start: 7, end: 8, text: "   This is a simple webpage.\n      And I mean really simple."},
              { start: 8, end: 30, text: "This is a simple webpage.\n\n\nAnd I mean really simple." }],
   "audio" : "whitespace.mp3",
-  "highlights" : []}
+  "highlights" : []};
 
 var em_hint = {
   "code" : [ { start: 1, end: 30, text: "This text is normal.\n<em>This text is italicized.</em>\n<strong>This text is bold.</strong>" } ],
   "audio" : "tinkering.mp3",
   "highlights" : [ { start: 1, end: 3, textToHighlight: 'This text is italicized'},
   { start: 4, end: 30, textToHighlight: '<em>' } ]
-}
+};
 
 var testConstraints = function(win) {
   if ($(win).text().indexOf("Hello, world") >= 0)
@@ -120,18 +125,6 @@ var giveHint = function(hint) {
   pop.play();
 }
 
-var chooseHint = function(num) {
-  if (num == 1) {
-    editor.getSession().setValue('Hello, ');
-
-    showHint('Now just type "world" in the code window.');
-  }
-}
-
-var showHint = function(msg) {
-  alert(msg);
-}
-
 var lastCode = "";
 
 $(document).ready(function() {
@@ -140,7 +133,7 @@ $(document).ready(function() {
 
 
   $('#c1-hint').click(function() {
-    chooseHint(1); });
+    giveHint(hw_hint); });
 
   $('#c2-hint').click(function() {
     giveHint(em_hint); });
