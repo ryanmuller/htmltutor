@@ -59,7 +59,7 @@ var ws_hint = {
   "code" : [ { start: 0, end: 4, text: "This is a simple webpage.\nAnd I mean really simple." },
              { start: 6, end: 7, text: "This   is  a   simple    webpage.\nAnd  I  mean     really    simple." },
              { start: 7, end: 8, text: "   This is a simple webpage.\n      And I mean really simple."},
-             { start: 8, end: 30, text: "This is a simple webpage.\n\n\nAnd I mean really simple." }],
+             { start: 8, end: 30, text: "This is a\nsimple webpage.\n\nAnd I mean\nreally simple." }],
   "audio" : "whitespace.mp3",
   "highlights" : []};
 
@@ -93,7 +93,9 @@ var unhighlight = function() {
 
 var giveHint = function(hint) {
 
-  $('#audio source').attr('src', 'audio/' + hint.audio);
+  $('#audio').after($('<audio>').attr('id', 'audio').append($('<source>').attr('src',
+          'audio/' + hint.audio)))
+             .remove();
 
   var pop = Popcorn('#audio');
 
@@ -101,12 +103,13 @@ var giveHint = function(hint) {
     var hl = hint.code[i];
     
     (function(hl) {
-      pop.code({
+      var c = pop.code({
         start: hl.start,
         end: hl.end,
         onStart: function() { editor.getSession().setValue(hl.text); },
         onEnd: function() { }
       });
+      console.log(c);
     })(hl);
   }
   for(var i=0; i<hint.highlights.length; i++) {
