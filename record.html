@@ -97,7 +97,7 @@
       clearInterval(recordInterval);
       recordButton.setEnabled(true);
       clearInterval(recordTyping);
-      $('#output').val(window.codeoutput);
+      $('#output').val(JSON.stringify(window.codeoutput));
 
     }
 
