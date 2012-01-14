@@ -55,6 +55,11 @@ var hw_hint = {
   "audio" : "type-world.mp3",
   "highlights" : []};
 
+var bold_hint = {
+  "code" : [{"start":0,"end":1,"text":"This is some text "},{"start":1,"end":2,"text":"This is some text "},{"start":2,"end":3,"text":"This is some text "},{"start":3,"end":4,"text":"This is some text "},{"start":4,"end":5,"text":"This is some text "},{"start":5,"end":6,"text":"This is some text "},{"start":6,"end":7,"text":"This is some bold text "},{"start":7,"end":8,"text":"This is some <stron>bold text "},{"start":8,"end":9,"text":"This is some <strong>bold text "},{"start":9,"end":10,"text":"This is some <strong>bold</st> text "},{"start":10,"end":11,"text":"This is some <strong>bold</strong> text "}],
+  "audio" : "bold.wav",
+  "highlights" : []};
+
 var ws_hint = {
   "code" : [ { start: 0, end: 4, text: "This is a simple webpage.\nAnd I mean really simple." },
              { start: 6, end: 7, text: "This   is  a   simple    webpage.\nAnd  I  mean     really    simple." },
@@ -139,7 +144,7 @@ $(document).ready(function() {
     giveHint(hw_hint); });
 
   $('#c2-hint').click(function() {
-    giveHint(em_hint); });
+    giveHint(bold_hint); });
 
   $('#c3-hint').click(function() {
     giveHint(ws_hint); });
