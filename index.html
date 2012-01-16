@@ -20,9 +20,21 @@
       }
 
 
+      #assignment {
+        min-height: 200px;
+        max-height: 200px;
+      }
       #assignment li {
         color: #050;
         font-size: 16px;
+      }
+
+      #alert-container {
+        min-height: 40px;
+      }
+
+      div#alert {
+        margin: 0px;
       }
 
       section {
@@ -44,7 +56,6 @@
       }
     </style>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap-modal.js"></script>
     <script type="text/javascript" src="js/popcorn-complete.min.js"></script>
     <script type="text/javascript" src="js/jquery.highlight-3.min.js"></script>
     <script type="text/javascript">
@@ -80,16 +91,50 @@ var em_hint = {
   { start: 4, end: 30, textToHighlight: '<em>' } ]
 };
 
+var constraintAlert = function(msg, type) {
+  $('#alert p').text(msg);
+  $('#alert').removeClass('error')
+             .removeClass('success')
+             .addClass(type)
+             .show()
+             .fadeOut(5000);
+}
+
+var completeTask = function(task_name) {
+  $('#'+task_name).addClass('complete')
+                  .fadeOut(2000);
+  constraintAlert("Good job!", 'success');
+}
+
+
+
+
+var uncompleteTask = function(task_name) {
+  $('#'+task_name).removeClass('complete')
+                  .fadeIn(1000);
+  constraintAlert("You've broken a constraint!", 'error');
+}
+
+var findString = function(regex, win, element) {
+  return $(win).find(element).text().match(regex);
+}
+
 var testConstraints = function(win) {
-  if ($(win).text().indexOf("Hello, world") >= 0)
-    $('#c1').addClass('complete');
-  else
-    $('#c1').removeClass('complete');
+  if (findString(/Hello, \s*world/, win, 'body')) {
+    if ( ! $('#c1').hasClass('complete') ) completeTask('c1');
+  } else if ( $('#c1').hasClass('complete') ) {
+      uncompleteTask('c1');
+  }
 
   if ($(win).find('strong:contains("world")').length > 0)
     $('#c2').addClass('complete');
   else
     $('#c2').removeClass('complete');
+
+
+  //if ($(win).find('body:contains("Hello,")').children('br').length > 0)
+  //  console.log($(win).find('br').next());
+
 
 }
 
@@ -119,7 +164,6 @@ var giveHint = function(hint) {
         onStart: function() { editor.getSession().setValue(hl.text); },
         onEnd: function() { }
       });
-      console.log(c);
     })(hl);
   }
   for(var i=0; i<hint.highlights.length; i++) {
@@ -141,8 +185,9 @@ var giveHint = function(hint) {
 var lastCode = "";
 
 $(document).ready(function() {
-  $('#my-modal').modal();
 
+    window.assignment = [ { name: "hw", hint: hw_hint, progress : "incomplete"
+    }];
 
 
   $('#c1-hint').click(function() {
@@ -170,6 +215,12 @@ $(document).ready(function() {
         <div class="row" id="assignment">
           <div class="span16">
             <h3>Assignment</h3>
+            <div id="alert-container">
+              <div id="alert" class="alert-message error hidden">
+                <a class="close" href="#">x</a>
+                <p><strong>Holy guacamole!</strong> Best check yo self, you're not looking too good.</p>
+              </div>
+            </div>
             <audio id="audio">
               <source src="audio/tinkering.mp3"></source>
             </audio>
@@ -192,10 +243,6 @@ $(document).ready(function() {
         <div class="row">
           <div class="span8">
             <h3>Code</h3>
-            <div class="alert-message success hidden">
-              <a class="close" href="#">x</a>
-              <p><strong>Holy guacamole!</strong> Best check yo self, you're not looking too good.</p>
-            </div>
 
             <div id="code"></div>
             <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
